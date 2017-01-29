@@ -1,5 +1,5 @@
 #Gradient.js
-[![1.png](http://i.imgur.com/JZT4wm1.gif)](https://postimg.org/image/954t65a5n/)
+![1.png](http://i.imgur.com/JZT4wm1.gif)
 **Suported features:**
 
 - Transition duration

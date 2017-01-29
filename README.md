@@ -1,4 +1,5 @@
 #Gradient.js
+[![1.png](http://i.imgur.com/JZT4wm1.gif)](https://postimg.org/image/954t65a5n/)
 **Suported features:**
 
 - Transition duration
@@ -6,7 +7,7 @@
 
 **Not suportet yet:**
 
-- Gradient direction
+- Gradient direction (beta support, branch: "feature/gradient_direction")
 - Different count of colors (between start gradient and target)
 - Hex color code
 - Works only with linear-gradient

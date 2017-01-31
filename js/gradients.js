@@ -127,8 +127,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var input = document.querySelector('[name="to"]');
 
 
-    var string_1 = 'linear-gradient(rgb(247, 91, 52) 0%, rgb(240, 233, 93) 25%, rgb(43, 245, 12) 50%, rgb(24, 85, 240) 75%, rgb(166, 39, 230) 100%)';
-    var string_2 = 'linear-gradient(rgb(166, 39, 230) 0%, rgb(24, 85, 240) 25%, rgb(43, 245, 12) 50%, rgb(240, 233, 93) 75%, rgb(247, 91, 52) 100%)';
+    var string_1 = 'linear-gradient(rgb(254,235,224) 0%,rgb(233,237,251) 100%)';
+    var string_2 = 'linear-gradient(rgb(125,185,232) 0%,rgb(176,178,35) 100%)';
 
     start.addEventListener('click', function(){
         var from = document.querySelector('body');

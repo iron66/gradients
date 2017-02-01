@@ -1,152 +1,258 @@
-function step(element, startGradient, diff) {
-    var  startGradientParts = startGradient.parts;
-    if (startGradient.type == 'linear') {
-        var newGradientString = 'linear-gradient(rgb(';
-        for(var j in startGradientParts) {
-            var arr =  startGradientParts[j];
-            var channels = arr.channels;
-            var percent = arr.percent;
-            for (var i in channels) {
-                if (diff.maxDiff.value === undefined || +j == diff.maxDiff.valuePart && +i == diff.maxDiff.valueChannel && channels[i] == diff.maxDiff.value) {
-                    clearInterval(window.gradientIterationTimer);
-                    return;
-                }
-                if (channels[i] < diff.parts[j].channels[i].value && diff.parts[j].channels[i].positive === true) {
-                    channels[i]++;
-                } else if (channels[i] > diff.parts[j].channels[i].value && diff.parts[j].channels[i].positive === false){
-                    channels[i]--;
-                }
-                newGradientString += channels[i]
-                if (i != 2) {
-                    newGradientString += ', ';
-                }
-            }
-            if ( startGradientParts[+j+1]) {
-                newGradientString += ') ' + percent + ', rgb(';
-            } else {
-                newGradientString += ') ' + percent + ')';
-            }
-        }
-    }
-    element.style.backgroundImage = newGradientString;
-}
+Element.prototype.gradientTransition = function (targetGradientString, duration, fps) {
+  'use strict';
+  // Default value of duration:
+  if (typeof(duration)==='undefined') duration = 1000;
+  if (typeof(fps)==='undefined') fps = 1000/60;
 
-function getColors(input) {
-    var rgb = [];
-    var color = input;
-    var matchColors = /(\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})/;
-    var match = matchColors.exec(color);
-    if (match !== null) {
-        rgb.push(parseInt(match[1]));
-        rgb.push(parseInt(match[2]));
-        rgb.push(parseInt(match[3]));
-    }
-    return rgb;
-}
+  var startGradientString = window.getComputedStyle(this, null).backgroundImage,
+    startGradient = parseGradient(startGradientString),
+    targetGradient = parseGradient(targetGradientString),
+    frames = duration / fps;
 
-function parseGradient(string) {
-    var gradientColors = {};
+  function parseGradient(string) {
+    var gradient = {};
     var arr = [];
     var reg = /rgb[a]?\((.*?)\)[ ]*?(\d{1,2}(?!\d)%|100%)/g;
 
-    gradientColors.parts = [];
+    gradient.direction = getDirection(string);
+    gradient.type = getType(string);
+    gradient.parts = [];
     while ( (arr = reg.exec(string)) !== null) {
-        gradientColors.parts.push({
-            'channels': getColors(arr[1]),
-            'percent': arr[2],
-        })
+      gradient.parts.push({
+        'channels': getColors(arr[1]),
+        'percent': arr[2],
+      })
     }
-    return gradientColors;
-}
+    return gradient;
+  }
+  function getDirection (string) {
+    var reg = /(\d{1,3}deg)|(to )|((left|right|bottom|top)\s?(left|right|bottom|top)?)/g;
+    var degReg = /(\d{1,3}deg)/;
+    var strReg = /(to )|(top|right|bottom|left)/;
+    var result;
+    var arr = [];
+    var match = [];
+    while ( (arr = reg.exec(string)) !== null) {
+      if (arr != null) {
+        match.push(arr[0]);
+      }
+    }
+    //gradient derection defined as corner e.g. "130deg"
+    if (match[0].search(degReg) != -1) {
+      result = match[0].replace('deg','')
+    }
+    //gradient derection defined as string e.g. "to top right"
+    else if (match[1].search(strReg) != -1) {
+      result = stringToDegree(match[1])
+    }
 
-function difference(startGradient, targetGradient) {
-    var max = 0,
-        maxDiff = {};
-    for(var part in targetGradient.parts) {
-        var arr =  targetGradient.parts[part];
-        var channels = arr.channels;
-        for (channel in channels) {
-            var diff = channels[channel] - startGradient.parts[part].channels[channel];
-            if (diff > 0) {
-                var positive = true;
-            } else if (diff < 0){
-                var positive = false
-            } // if diff == 0 'positive' should stay 'undefined'
-            var value = targetGradient.parts[part].channels[channel];
-            targetGradient.parts[part].channels[channel] = {};
-            targetGradient.parts[part].channels[channel].value = value;
-            targetGradient.parts[part].channels[channel].positive = positive;
-            if (Math.abs(diff) > max) {
-                max = Math.abs(diff);
-                maxDiff = {
-                    'value': channels[channel].value,
-                    'valuePart': part,
-                    'valueChannel': channel,
-                    'valueDifference': max,
-                    'positive': positive
-                };
-            }
+    return (parseInt(result)%360);
+  }
+  function getColors(string) {
+    var rgb = [];
+    var matchColors = /(\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})/;
+    var match = matchColors.exec(string);
+    try {
+      if (match !== null) {
+        /**
+         * 0: red channel (0-255)
+         * 1: green channel (0-255)
+         * 2: blue channel (0-255)
+         **/
+        if (0 <= parseInt(match[1]) && parseInt(match[1]) <= 255) {
+          rgb.push(parseInt(match[1]));
+        } else {
+          throw new SyntaxError('In \'' + string + '\', red channel can\'t be greater then 255 and lower then 0');
         }
+        if (0 <= parseInt(match[2]) && parseInt(match[2]) <= 255) {
+          rgb.push(parseInt(match[2]));
+        } else {
+          throw new SyntaxError('In \'' + string + '\', green channel can\'t be greater then 255 and lower then 0');
+        }
+        if (0 <= parseInt(match[3]) && parseInt(match[3]) <= 255) {
+          rgb.push(parseInt(match[3]));
+        } else {
+          throw new SyntaxError('In \'' + string + '\', blue channel can\'t be greater then 255 and lower then 0');
+        }
+      } else {
+        throw new SyntaxError("Incorrect target gradient string");
+      }
+    } catch(e) {
+      // if colors in target gradient string is incorrect:
+      console.warn('Error ' + e.name + ":" + e.message + "\n" + e.stack);
+      return null;
     }
+    return rgb; //array[3]
+  }
+  function getType(string) {
+    var startIsLinear = string.search('linear-gradient');
+    var startIsRadial = string.search('linear-gradient');
+    try {
+      if (startIsLinear != -1) {
+        return 'linear';
+      } else if (startIsRadial != -1) {
+        return 'radial';
+      }  else {
+        throw new SyntaxError("Incorrect target gradient string");
+      }
+    } catch(e) {
+      // if colors in target gradient string is incorrect:
+      console.warn('Error ' + e.name + ":" + e.message + "\n" + e.stack);
+      return null;
+    }
+  }
+
+  function step(currentGradient, targetGradient, type) {
+    if (type == 'linear') {
+      if (currentGradient.direction < targetGradient.direction.value) {
+        currentGradient.direction += targetGradient.direction.step;
+      } else if (currentGradient.direction > targetGradient.direction.value) {
+        currentGradient.direction += targetGradient.direction.step;
+      }
+      for (var p in currentGradient.parts) {
+        var currentPart = currentGradient.parts[p];
+        for (var c in currentGradient.parts[p].channels) {
+          if (currentGradient.parts[p].channels[c] < targetGradient.parts[p].channels[c].value) {
+            currentGradient.parts[p].channels[c] += targetGradient.parts[p].channels[c].step;
+          } else if (currentPart.channels[c] > targetGradient.parts[p].channels[c].value){
+            currentGradient.parts[p].channels[c] += targetGradient.parts[p].channels[c].step;
+          }
+        }
+      }
+      return currentGradient;
+    }
+  }
+
+  function difference(startGradient, targetGradient) {
+    // initial maximal difference value
+    var max = 0,
+      maxDiff = {};
+
+    var directionDifference = targetGradient.direction - startGradient.direction;
+    if (Math.abs(directionDifference) > max) {
+      max = directionDifference;
+      if (directionDifference > 0) {
+        var positive = true;
+      } else if (directionDifference < 0) {
+        var positive = false
+      } // if difference = 0 -> 'positive' should stay 'undefined'
+      maxDiff = {
+        'value': targetGradient.direction,
+        'valuePart': 'direction',
+        'valueDifference': max, // save the difference value
+        'positive': positive,
+        'step': targetGradient.direction / frames
+      };
+      targetGradient.direction = {
+        'value': targetGradient.direction,
+        'valuePart': 'direction',
+        'valueDifference': directionDifference, // save the difference value
+        'positive': positive,
+        'step': directionDifference / frames
+      };
+    }
+    //TODO: Add the difference between percentages to compare
+    for (var p in targetGradient.parts) {
+      for (var c in targetGradient.parts[p].channels) {
+        var colorDifference = targetGradient.parts[p].channels[c] - startGradient.parts[p].channels[c];
+        //Define the direction of difference (positive or negative)
+        if (colorDifference > 0) {
+          var positive = true;
+        } else if (colorDifference < 0){
+          var positive = false
+        } // if difference = 0 -> 'positive' should stay 'undefined'
+        var currentValue = targetGradient.parts[p].channels[c];
+        // Write new values into targetGradient object
+        targetGradient.parts[p].channels[c] = {};
+        targetGradient.parts[p].channels[c].value = currentValue;
+        targetGradient.parts[p].channels[c].positive = positive;
+        targetGradient.parts[p].channels[c].valueDifference = colorDifference;
+        targetGradient.parts[p].channels[c].step = targetGradient.parts[p].channels[c].valueDifference / frames;
+        // Then compare the difference with 'max'
+        if (Math.abs(colorDifference.value) > max) {
+          max = Math.abs(colorDifference.value);
+          maxDiff = {
+            'value': targetGradient.parts[p].channels[c].value,
+            'valuePart': p, // save the part number
+            'valueChannel': c, // save the channel number
+            'valueDifference': max, // save the difference value
+            'positive': positive,
+            'step': targetGradient.parts[p].channels[c].value / frames
+          };
+        }
+      }
+    }
+
     targetGradient.maxDiff = maxDiff;
     return targetGradient;
-}
+  }
 
-function gradientTransition(startGradient, targetGradient, element, delay) {
-    var diff = difference(startGradient, targetGradient);
-    window.gradientIterationTimer = setInterval(function () {
-        step(element, startGradient, diff)
-    }, (delay / diff.maxDiff.valueDifference));
-}
-
-function gradient(elementSelector, targetGradientString, delay) {
-    if (typeof(delay)==='undefined') delay = 100;
-
-    var element = document.querySelector(elementSelector),
-        computedStyle = window.getComputedStyle(element, null),
-        startGradientString = computedStyle.backgroundImage,
-        gradient =  parseGradient(startGradientString),
-        targetGradient =  parseGradient(targetGradientString);
-
-    if (gradient && targetGradient) {
-        //define the type of gradient
-        var startIsLinear = startGradientString.search('linear-gradient'),
-            targetIsLinear = targetGradientString.search('linear-gradient');
-        if (startIsLinear != -1 && targetIsLinear !=-1) {
-            gradient.type = 'linear';
-        } else {
-            alert('Sorry, it works onli with linear gradients yet. Please, make sure that you typed correct gradient rule');
-        }
-        gradientTransition(gradient, targetGradient, element, delay);
+  function stringToDegree(string) {
+    switch (string) {
+      case 'top': return 0;
+      case 'right': return 90;
+      case 'bottom': return 180;
+      case 'left': return 270;
+      case 'top right': return 45;
+      case 'bottom right': return 135;
+      case 'bottom left': return 225;
+      case 'top left': return 315;
+      case 'right top': return 45;
+      case 'right bottom': return 135;
+      case 'left bottom': return 225;
+      case 'left top': return 315;
     }
-}
+  }
 
-document.addEventListener("DOMContentLoaded", function(event) {
-    var start = document.querySelector('#start_button');
-    var change = document.querySelector('#change');
-    var input = document.querySelector('[name="to"]');
-
-
-    var string_1 = 'linear-gradient(rgb(254,235,224) 0%,rgb(233,237,251) 100%)';
-    var string_2 = 'linear-gradient(rgb(125,185,232) 0%,rgb(176,178,35) 100%)';
-
-    start.addEventListener('click', function(){
-        var from = document.querySelector('body');
-        var inputValue = input.value.trim();
-        if (inputValue != undefined && inputValue != '') {
-            gradient('body', inputValue, 3000);
+  function transition(el, startGradient, targetGradient, duration) {
+    targetGradient = difference(startGradient, targetGradient);
+    var framesCounter = 0;
+    var gradientIterationTimer = setInterval(function () {
+      framesCounter++;
+      console.log(framesCounter);
+      if (framesCounter < frames) {
+        var currentGradient = step(startGradient, targetGradient, startGradient.type);
+        var string = 'linear-gradient('+Math.floor(currentGradient.direction)+'deg, rgb(';
+        for (var p in currentGradient.parts) {
+          for (var c in currentGradient.parts[p].channels) {
+            string += Math.floor(currentGradient.parts[p].channels[c]);
+            if (c != 2) {
+              string += ', ';
+            }
+          }
+          if ( currentGradient.parts[+p+1]) {
+            string += ') ' + currentGradient.parts[p].percent + ', rgb(';
+          } else {
+            string += ') ' + currentGradient.parts[p].percent + ')';
+          }
         }
-    });
+        console.log(string);
+        el.style.backgroundImage = string;
+      } else {
+        el.style.backgroundImage = targetGradientString;
+        clearInterval(gradientIterationTimer);
+      }
 
-    change.addEventListener('click', function(){
-        var element = document.querySelector('body'),
-            computedStyle = window.getComputedStyle(element, null),
-            gradientString = computedStyle.backgroundImage;
+    }, (duration / frames));
+  }
 
-        if (gradientString == string_1) {
-            input.value = string_2;
-        } else if (gradientString == string_2){
-            input.value = string_1;
-        }
-    });
-});
+
+
+  try {
+    if (targetGradient.type == 'linear' && startGradient.type == 'linear') {
+      // Linear transition
+      transition(this, startGradient, targetGradient, duration);
+      // console.log(JSON.stringify(startGradient)); // TODO: remove console.log when functionality will be ready
+      // console.log(JSON.stringify(targetGradient)); // TODO: remove console.log when functionality will be ready
+
+    } else if (targetGradient.type == 'radial' && startGradient.type == 'radial'){
+      // Radial transition
+      throw new Error('Sorry, it works only with linear gradients yet. Please, make sure that you typed correct gradient rule');
+    }  else {
+      throw new SyntaxError("Gradients types is different");
+    }
+  } catch(e) {
+    console.warn('Error ' + e.name + ":" + e.message + "\n" + e.stack);
+    return null;
+  }
+};

@@ -73,7 +73,7 @@ function getDirection (string) {
   var strReg = /(to )|(top|right|bottom|left)/;
   var result;
   var arr = [];
-  var match = []; // array || null
+  var match = [];
   while ( (arr = reg.exec(string)) !== null) {
       if (arr != null) {
         match.push(arr[0]);
@@ -88,7 +88,7 @@ function getDirection (string) {
     result = stringToDeg(match[1])
   }
 
-  return parseInt(result);
+  return (parseInt(result);
 }
 
 function parseGradient(string) {
@@ -113,6 +113,7 @@ function difference(startGradient, targetGradient) {
     var arr =  targetGradient.parts[part];
     var channels = arr.channels;
     for (channel in channels) {
+      // diff is a difference between each channel (rgb) in start and target gradients
       var diff = channels[channel] - startGradient.parts[part].channels[channel];
       if (diff > 0) {
         var positive = true;
@@ -164,7 +165,7 @@ function gradient(elementSelector, targetGradientString, delay) {
       startGradient.direction = getDirection(startGradientString);
       targetGradient.direction = getDirection(targetGradientString);
     } else {
-      alert('Sorry, it works onli with linear gradients yet. Please, make sure that you typed correct gradient rule');
+      alert('Sorry, it works only with linear gradients yet. Please, make sure that you typed correct gradient rule');
     }
     gradientTransition(startGradient, targetGradient, element, delay);
   }

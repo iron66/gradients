@@ -209,7 +209,6 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     var framesCounter = 0;
     var gradientIterationTimer = setInterval(function () {
       framesCounter++;
-      console.log(framesCounter);
       if (framesCounter < frames) {
         var currentGradient = step(startGradient, targetGradient, startGradient.type);
         var string = 'linear-gradient('+Math.floor(currentGradient.direction)+'deg, rgb(';
@@ -226,7 +225,6 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
             string += ') ' + currentGradient.parts[p].percent + ')';
           }
         }
-        console.log(string);
         el.style.backgroundImage = string;
       } else {
         el.style.backgroundImage = targetGradientString;
@@ -242,8 +240,6 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     if (targetGradient.type == 'linear' && startGradient.type == 'linear') {
       // Linear transition
       transition(this, startGradient, targetGradient, duration);
-      // console.log(JSON.stringify(startGradient)); // TODO: remove console.log when functionality will be ready
-      // console.log(JSON.stringify(targetGradient)); // TODO: remove console.log when functionality will be ready
 
     } else if (targetGradient.type == 'radial' && startGradient.type == 'radial'){
       // Radial transition

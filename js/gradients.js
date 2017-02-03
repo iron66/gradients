@@ -1,17 +1,36 @@
 Element.prototype.gradientTransition = function (targetGradientString, duration, fps) {
   'use strict';
-  // Default value of duration:
-  if (typeof(duration)==='undefined') duration = 1000;
-  if (typeof(fps)==='undefined') fps = 1000/60;
+
+  // Default values:
+  duration = duration || 1000;
+  fps = fps || 1000 / 60;
 
   var startGradientString = window.getComputedStyle(this, null).backgroundImage,
     startGradient = parseGradient(startGradientString),
     targetGradient = parseGradient(targetGradientString),
     frames = duration / fps;
 
+  try {
+    if (targetGradient.type == 'linear' && startGradient.type == 'linear') {
+      // Linear transition
+      transition(this, startGradient, targetGradient, duration);
+
+    } else if (targetGradient.type == 'radial' && startGradient.type == 'radial'){
+      // Radial transition
+      throw new Error('Sorry, it works only with linear gradients yet. Please, make sure that you typed correct gradient rule');
+    }  else {
+      throw new SyntaxError("Gradients types is different");
+    }
+  } catch(e) {
+    console.warn('Error ' + e.name + ":" + e.message + "\n" + e.stack);
+    return null;
+  }
+
   function parseGradient(string) {
     var gradient = {};
     var arr = [];
+    // An example of a string which you are trying to match by this regex
+    // will be great (instead of this comment).
     var reg = /rgb[a]?\((.*?)\)[ ]*?(\d{1,2}(?!\d)%|100%)/g;
 
     gradient.direction = getDirection(string);
@@ -20,38 +39,44 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     while ( (arr = reg.exec(string)) !== null) {
       gradient.parts.push({
         'channels': getColors(arr[1]),
-        'percent': arr[2],
+        'percent': arr[2]
       })
     }
     return gradient;
   }
+
   function getDirection (string) {
-    var reg = /(\d{1,3}deg)|(to )|((left|right|bottom|top)\s?(left|right|bottom|top)?)/g;
-    var degReg = /(\d{1,3}deg)/;
-    var strReg = /(to )|(top|right|bottom|left)/;
     var result;
-    var arr = [];
+
     var match = [];
+
+    var arr = [];
+    var reg = /(\d{1,3}deg)|(to )|((left|right|bottom|top)\s?(left|right|bottom|top)?)/g;
     while ( (arr = reg.exec(string)) !== null) {
-      if (arr != null) {
-        match.push(arr[0]);
-      }
+      match.push(arr[0]);
     }
-    //gradient derection defined as corner e.g. "130deg"
+
+    // Gradient direction defined as corner e.g. "130deg"
+    var degReg = /(\d{1,3}deg)/;
+    // Gradient direction defined as string e.g. "to top right"
+    var strReg = /(to )|(top|right|bottom|left)/;
+
     if (match[0].search(degReg) != -1) {
       result = match[0].replace('deg','')
     }
-    //gradient derection defined as string e.g. "to top right"
     else if (match[1].search(strReg) != -1) {
       result = stringToDegree(match[1])
     }
 
     return (parseInt(result)%360);
   }
+
   function getColors(string) {
     var rgb = [];
+
     var matchColors = /(\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})/;
     var match = matchColors.exec(string);
+
     try {
       if (match !== null) {
         /**
@@ -62,31 +87,37 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
         if (0 <= parseInt(match[1]) && parseInt(match[1]) <= 255) {
           rgb.push(parseInt(match[1]));
         } else {
-          throw new SyntaxError('In \'' + string + '\', red channel can\'t be greater then 255 and lower then 0');
+          throw new SyntaxError("In '" + string + "', red channel can't be greater then 255 and lower than 0");
         }
         if (0 <= parseInt(match[2]) && parseInt(match[2]) <= 255) {
           rgb.push(parseInt(match[2]));
         } else {
-          throw new SyntaxError('In \'' + string + '\', green channel can\'t be greater then 255 and lower then 0');
+          throw new SyntaxError("In '" + string + "', green channel can't be greater then 255 and lower than 0");
         }
         if (0 <= parseInt(match[3]) && parseInt(match[3]) <= 255) {
           rgb.push(parseInt(match[3]));
         } else {
-          throw new SyntaxError('In \'' + string + '\', blue channel can\'t be greater then 255 and lower then 0');
+          throw new SyntaxError("In '" + string + "', blue channel can't be greater then 255 and lower than 0");
         }
       } else {
         throw new SyntaxError("Incorrect target gradient string");
       }
     } catch(e) {
-      // if colors in target gradient string is incorrect:
+      // If colors in target gradient string is incorrect:
       console.warn('Error ' + e.name + ":" + e.message + "\n" + e.stack);
       return null;
     }
+
     return rgb; //array[3]
   }
+
+  // If this function would be before getColors then the code had been more readable
+  // since this function gets called earlier.
   function getType(string) {
     var startIsLinear = string.search('linear-gradient');
     var startIsRadial = string.search('linear-gradient');
+    // startIsLinear === startIsRadial ???
+
     try {
       if (startIsLinear != -1) {
         return 'linear';
@@ -96,7 +127,7 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
         throw new SyntaxError("Incorrect target gradient string");
       }
     } catch(e) {
-      // if colors in target gradient string is incorrect:
+      // If colors in target gradient string is incorrect:
       console.warn('Error ' + e.name + ":" + e.message + "\n" + e.stack);
       return null;
     }
@@ -151,6 +182,7 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
         'step': directionDifference / frames
       };
     }
+
     //TODO: Add the difference between percentages to compare
     for (var p in targetGradient.parts) {
       for (var c in targetGradient.parts[p].channels) {
@@ -204,6 +236,7 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     }
   }
 
+  // Should be before functions step, difference, stringToDegree.
   function transition(el, startGradient, targetGradient, duration) {
     targetGradient = difference(startGradient, targetGradient);
     var framesCounter = 0;
@@ -234,21 +267,4 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     }, (duration / frames));
   }
 
-
-
-  try {
-    if (targetGradient.type == 'linear' && startGradient.type == 'linear') {
-      // Linear transition
-      transition(this, startGradient, targetGradient, duration);
-
-    } else if (targetGradient.type == 'radial' && startGradient.type == 'radial'){
-      // Radial transition
-      throw new Error('Sorry, it works only with linear gradients yet. Please, make sure that you typed correct gradient rule');
-    }  else {
-      throw new SyntaxError("Gradients types is different");
-    }
-  } catch(e) {
-    console.warn('Error ' + e.name + ":" + e.message + "\n" + e.stack);
-    return null;
-  }
 };

@@ -1,0 +1,22 @@
+.canvas {
+  background-color: #ddd;
+  padding: 25px 40px;
+  box-sizing: border-box;
+  background-image: linear-gradient(to left, #2C3E50 , #FD746C);
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  button:nth-child(2) {
+    position: absolute;
+    top: 40%;
+    right: 25px;
+  }
+  button:nth-child(3) {
+    position: absolute;
+    top: 60%;
+    right: 25px;
+  }
+}

@@ -1,0 +1,164 @@
+@font-face {
+  font-family: 'snicklesregular';
+  src: url("../fonts/Snickles-webfont.eot");
+  src: url("../fonts/Snickles-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Snickles-webfont.woff") format("woff"), url("../fonts/Snickles-webfont.ttf") format("truetype"), url("../fonts/Snickles-webfont.svg#snicklesregular") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'overpass-mono';
+  src: url("../fonts/overpass-mono-regular.eot");
+  src: url("../fonts/overpass-mono-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/overpass-mono-regular.woff2") format("woff2"), url("../fonts/overpass-mono-regular.woff") format("woff"), url("../fonts/overpass-mono-regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'acherus_grotesqueregular';
+  src: url("../fonts/acherus_grotesque_-_regular-webfont.eot");
+  src: url("../fonts/acherus_grotesque_-_regular-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/acherus_grotesque_-_regular-webfont.woff2") format("woff2"), url("../fonts/acherus_grotesque_-_regular-webfont.woff") format("woff"), url("../fonts/acherus_grotesque_-_regular-webfont.ttf") format("truetype"), url("../fonts/acherus_grotesque_-_regular-webfont.svg#acherus_grotesqueregular") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+
+html {
+  height: 100%; }
+
+body {
+  display: -ms-flexbox;
+  display: flex;
+  min-height: 100%;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-line-pack: stretch;
+      align-content: stretch;
+  margin: 0;
+  font-family: acherus_grotesqueregular; }
+
+.main {
+  background-color: #fff;
+  -ms-flex: 1;
+      flex: 1;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  position: relative; }
+
+code {
+  font-family: overpass-mono;
+  background-color: #e8e8e8;
+  border: 1px solid #d0cfcf;
+  border-radius: 3px;
+  font-size: 11px;
+  line-height: 31px;
+  padding: 8px 10px 5px 10px; }
+
+button {
+  background-color: transparent;
+  padding: 8px 48px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  border: 3px solid black;
+  font-style: normal;
+  font-weight: 800; }
+
+.top {
+  padding: 25px 40px;
+  -ms-flex: 0 1 auto;
+      flex: 0 1 auto;
+  position: relative;
+  z-index: 1;
+  background-color: #fff; }
+  .top .bar {
+    overflow: hidden; }
+    .top .bar .name, .top .bar #settings_toggler {
+      margin: 10px; }
+    .top .bar .name {
+      font-family: snicklesregular;
+      font-size: 30px;
+      color: #4b4b4b;
+      float: left; }
+    .top .bar #settings_toggler {
+      float: right; }
+  .top #gradient_settings > div {
+    overflow: hidden;
+    padding: 20px 0;
+    border-bottom: 1px solid #d0cfcf; }
+  .top .settings {
+    overflow: hidden; }
+    .top .settings input[type="radio"] {
+      position: relative;
+      height: 20px;
+      width: 20px;
+      /* margin: 5px; */
+      /* margin-bottom: -35px; */
+      /* display: inline-block; */
+      vertical-align: middle; }
+      .top .settings input[type="radio"]:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        background-color: #f2bcff; }
+      .top .settings input[type="radio"]:checked:before {
+        box-shadow: 0px 0px 2px 2px #acacff; }
+    .top .settings input[type="text"] {
+      vertical-align: middle;
+      font-family: overpass-mono;
+      background-color: #f9f9f9;
+      border: 1px solid #d0cfcf;
+      border-radius: 3px;
+      font-size: 11px;
+      line-height: 11px;
+      padding: 6px 10px 3px 10px; }
+    .top .settings .title {
+      width: 20%;
+      float: left; }
+    .top .settings .options {
+      width: 40%;
+      float: left; }
+    .top .settings .custom {
+      width: 40%;
+      float: left; }
+    .top .settings button {
+      margin: 20px auto 0;
+      display: block; }
+
+.canvas {
+  background-color: #ddd;
+  padding: 25px 40px;
+  box-sizing: border-box;
+  background-image: linear-gradient(to left, #2C3E50, #FD746C);
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 0; }
+  .canvas button:nth-child(2) {
+    position: absolute;
+    top: 40%;
+    right: 25px; }
+  .canvas button:nth-child(3) {
+    position: absolute;
+    top: 60%;
+    right: 25px; }
+
+footer {
+  background-color: #252525;
+  padding: 25px 40px; }
+  footer .logo {
+    height: 70px;
+    width: auto;
+    float: left; }
+  footer .git-link {
+    height: 70px;
+    width: auto;
+    float: right; }
+  footer img {
+    max-width: 100%;
+    max-height: 100%; }
+
+/*# sourceMappingURL=style.css.map */

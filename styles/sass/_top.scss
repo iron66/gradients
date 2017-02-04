@@ -1,0 +1,84 @@
+.top {
+  padding: 25px 40px;
+  flex: 0 1 auto;
+  position: relative;
+  z-index: 1;
+  background-color: #fff;
+  .bar {
+    overflow: hidden;
+    .name, #settings_toggler {
+      margin: 10px;
+    }
+    .name {
+      font-family: snicklesregular;
+      font-size: 30px;
+      color: #4b4b4b;
+      float: left;
+    }
+    #settings_toggler {
+      float: right;
+    }
+  }
+  #gradient_settings {
+    &>div {
+      overflow: hidden;
+      padding: 20px 0;
+      border-bottom: 1px solid #d0cfcf;
+    }
+  }
+  .settings {
+    overflow: hidden;
+    input[type="radio"] {
+      position: relative;
+      height: 20px;
+      width: 20px;
+      /* margin: 5px; */
+      /* margin-bottom: -35px; */
+      /* display: inline-block; */
+      vertical-align: middle;
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        background-color: #f2bcff;
+
+      }
+      &:checked {
+        &:before {
+          box-shadow: 0px 0px 2px 2px #acacff;
+        }
+      }
+    }
+    input[type="text"] {
+      vertical-align: middle;
+      font-family: overpass-mono;
+      background-color: #f9f9f9;
+      border: 1px solid #d0cfcf;
+      border-radius: 3px;
+      font-size: 11px;
+      line-height: 11px;
+      padding: 6px 10px 3px 10px;
+    }
+    .title {
+      width: 20%;
+      float: left;
+    }
+    .options {
+      width: 40%;
+      float: left;
+    }
+    .custom {
+      width: 40%;
+      float: left;
+    }
+    button {
+      margin: 20px auto 0;
+      display: block;
+    }
+  }
+}
+

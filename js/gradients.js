@@ -4,22 +4,34 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
   if (typeof(duration)==='undefined') duration = 1000;
   if (typeof(fps)==='undefined') fps = 1000/60;
 
-  var startGradientString = window.getComputedStyle(this, null).backgroundImage,
+  var startGradientString = window.getComputedStyle(this, null).backgroundImage || this.style.backgroundImage,
     startGradient = parseGradient(startGradientString),
     targetGradient = parseGradient(targetGradientString),
-    frames = duration / fps;
+    oneFrameTime = 1000 / fps,
+    frames = duration / oneFrameTime;
 
   function parseGradient(string) {
     var gradient = {};
     var arr = [];
-    var reg = /rgb[a]?\((.*?)\)[ ]*?(\d{1,2}(?!\d)%|100%)/g;
+    var colorType = function (string) {
+      if ((string.search('rgb')) != -1) {
+        return 'rgb';
+      } else if ((string.search('#')) != -1) {
+        return 'hex';
+      }
+    };
+    if (colorType(string) == "rgb") {
+      var reg = /rgba?\(((?:\d{1,3}[, ]*){3})+\)\s*(\d{1,3}%)?/g;
+    } else if (colorType(string) == 'hex') {
+      var reg = /#([0-9a-fA-F]{6})+\s*(\d{1,3}%)?/g;
+    }
 
     gradient.direction = getDirection(string);
     gradient.type = getType(string);
     gradient.parts = [];
     while ( (arr = reg.exec(string)) !== null) {
       gradient.parts.push({
-        'channels': getColors(arr[1]),
+        'channels': getColors(arr[1], colorType(string)),
         'percent': arr[2],
       })
     }
@@ -48,9 +60,20 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
 
     return (parseInt(result)%360);
   }
-  function getColors(string) {
-    var rgb = [];
-    var matchColors = /(\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})/;
+  function getColors(string, type) {
+    if (type == 'rgb') {
+      var matchColors = /(\d{1,3}),\s*?(\d{1,3}),\s*?(\d{1,3})/;
+    } else if (type == 'hex') {
+      var matchColors = /([0-9a-fA-F]{2})\s*?([0-9a-fA-F]{2})\s*?([0-9a-fA-F]{2})/;
+    }
+    var defineNumber = function (number) {
+      if (type == 'rgb') {
+        return parseInt(number);
+      } else if (type == 'hex') {
+        return  parseInt(number, 16);
+      }
+    };
+    var colorsArray = [];
     var match = matchColors.exec(string);
     try {
       if (match !== null) {
@@ -59,18 +82,18 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
          * 1: green channel (0-255)
          * 2: blue channel (0-255)
          **/
-        if (0 <= parseInt(match[1]) && parseInt(match[1]) <= 255) {
-          rgb.push(parseInt(match[1]));
+        if (0 <= defineNumber(match[1]) && defineNumber(match[1]) <= 255) {
+          colorsArray.push(defineNumber(match[1]));
         } else {
           throw new SyntaxError('In \'' + string + '\', red channel can\'t be greater then 255 and lower then 0');
         }
-        if (0 <= parseInt(match[2]) && parseInt(match[2]) <= 255) {
-          rgb.push(parseInt(match[2]));
+        if (0 <= defineNumber(match[2]) && defineNumber(match[2]) <= 255) {
+          colorsArray.push(defineNumber(match[2]));
         } else {
           throw new SyntaxError('In \'' + string + '\', green channel can\'t be greater then 255 and lower then 0');
         }
-        if (0 <= parseInt(match[3]) && parseInt(match[3]) <= 255) {
-          rgb.push(parseInt(match[3]));
+        if (0 <= defineNumber(match[3]) && defineNumber(match[3]) <= 255) {
+          colorsArray.push(defineNumber(match[3]));
         } else {
           throw new SyntaxError('In \'' + string + '\', blue channel can\'t be greater then 255 and lower then 0');
         }
@@ -82,7 +105,7 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
       console.warn('Error ' + e.name + ":" + e.message + "\n" + e.stack);
       return null;
     }
-    return rgb; //array[3]
+    return colorsArray; //array[3]
   }
   function getType(string) {
     var startIsLinear = string.search('linear-gradient');
@@ -104,19 +127,11 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
 
   function step(currentGradient, targetGradient, type) {
     if (type == 'linear') {
-      if (currentGradient.direction < targetGradient.direction.value) {
-        currentGradient.direction += targetGradient.direction.step;
-      } else if (currentGradient.direction > targetGradient.direction.value) {
-        currentGradient.direction += targetGradient.direction.step;
-      }
+      currentGradient.direction += targetGradient.direction.step;
       for (var p in currentGradient.parts) {
         var currentPart = currentGradient.parts[p];
         for (var c in currentGradient.parts[p].channels) {
-          if (currentGradient.parts[p].channels[c] < targetGradient.parts[p].channels[c].value) {
-            currentGradient.parts[p].channels[c] += targetGradient.parts[p].channels[c].step;
-          } else if (currentPart.channels[c] > targetGradient.parts[p].channels[c].value){
-            currentGradient.parts[p].channels[c] += targetGradient.parts[p].channels[c].step;
-          }
+          currentGradient.parts[p].channels[c] += targetGradient.parts[p].channels[c].step;
         }
       }
       return currentGradient;
@@ -130,7 +145,7 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
 
     var directionDifference = targetGradient.direction - startGradient.direction;
     if (Math.abs(directionDifference) > max) {
-      max = directionDifference;
+      max = Math.abs(directionDifference);
       if (directionDifference > 0) {
         var positive = true;
       } else if (directionDifference < 0) {
@@ -145,7 +160,6 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
       };
       targetGradient.direction = {
         'value': targetGradient.direction,
-        'valuePart': 'direction',
         'valueDifference': directionDifference, // save the difference value
         'positive': positive,
         'step': directionDifference / frames

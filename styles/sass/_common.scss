@@ -1,0 +1,36 @@
+html {
+  height: 100%;
+}
+body {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  align-content: stretch;
+  margin: 0;
+  font-family: acherus_grotesqueregular;
+}
+.main {
+  background-color: #fff;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+code {
+  font-family: overpass-mono;
+  background-color: #e8e8e8;
+  border: 1px solid #d0cfcf;
+  border-radius: 3px;
+  font-size: 11px;
+  line-height: 31px;
+  padding: 8px 10px 5px 10px;
+}
+button {
+  background-color: transparent;
+  padding: 8px 48px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  border: 3px solid black;
+  font-style: normal;
+  font-weight: 800;
+}

@@ -4,22 +4,78 @@
     <meta charset="UTF-8">
     <title>gradients.js</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="js/gradients.js"></script>
+    <script src="js/script.js"></script>
 </head>
 <body>
-<div class="content">
-    <h1>Linear gradient transition</h1>
-    <p>Input format: linear-gradient(rgb(n,n,n) 0%, [rgb(n,n,n) n%]*n, rgb(n,n,n) 100%);</p>
-    <form action="#" id="gradient">
-        <input type="text" name="to">
-    </form>
-    <button id="change">change</button>
-    <button id="start_button">Magic!</button>
+<div class="main">
+    <div class="top">
+        <div class="bar">
+            <div class="name">
+                gradientTransition.js
+            </div>
+            <div id="settings_toggler">
+                [settings]
+            </div>
+        </div>
+        <div class="settings">
+            <div class="current">
+                Current: <code></code>
+            </div>
+            <div class="target">
+                <form id="gradient_settings">
+                    <div class="color">
+                        <div class="title">Color:</div>
+                        <div class="options">
+                            <input type="radio" name="color" data-color="1">
+                            <input type="radio" name="color" data-color="2">
+                            <input type="radio" name="color" data-color="3">
+                            <input type="radio" name="color" data-color="4">
+                            <input type="radio" name="color" data-color="5">
+                        </div>
+                        <div class="custom">
+                            <input type="text" name="color" placeholder="custom: e.g. #ffffff, #000000">
+
+                        </div>
+                    </div>
+                    <div class="direction">
+                        <div class="title">Direction:</div>
+                        <div class="options">
+                            <input type="radio" name="direction" data-direction="t">
+                            <input type="radio" name="direction" data-direction="r">
+                            <input type="radio" name="direction" data-direction="b">
+                            <input type="radio" name="direction" data-direction="l">
+                            <input type="radio" name="direction" data-direction="rt">
+                            <input type="radio" name="direction" data-direction="rb">
+                            <input type="radio" name="direction" data-direction="lb">
+                            <input type="radio" name="direction" data-direction="lt">
+                        </div>
+                        <div class="custom">
+                            <input type="text" name="direction" placeholder="custom: 0-360"><span>deg</span>
+                        </div>
+                    </div>
+                    <div class="duration">
+                        <span class="title">Duration:</span>
+                        <div class="custom">
+                            <input type="text" placeholder="e.g. 3000"><span>ms</span>
+                        </div>
+                    </div>
+                    <button>save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="canvas">
+        <div class="current_string"></div>
+        <button id="go">saved</button>
+        <button id="random">random</button>
+    </div>
 </div>
-<script>
-  var $body = document.querySelector('body');
-  $body.gradientTransition('linear-gradient(355deg, rgb(125,185,232) 0%,rgb(176,178,35) 100%)', 3000);
-</script>
+<footer>
+    <div class="logo"><a href="http://www.dotwrk.com/"><img src="styles/images/dotwrklogo.png" alt="wrk"></a></div>
+    <div class="git-link"><a href="https://github.com/iron66/gradients"><img src="styles/images/githublogo.png" alt="github"></a></div>
+</footer>
 </body>
 </html>

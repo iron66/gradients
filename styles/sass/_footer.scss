@@ -1,0 +1,19 @@
+footer {
+  background-color: #252525;
+  padding: 25px 40px;
+  .logo {
+    height: 70px;
+    width: auto;
+    float: left;
+  }
+  .git-link {
+    height: 70px;
+    width: auto;
+    float: right;
+  }
+  img {
+    max-width: 100%;
+    max-height: 100%;
+
+  }
+}

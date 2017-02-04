@@ -21,9 +21,8 @@ $(document).ready(function() {
   });
   $buttonRandom.click(function (e) {
     e.preventDefault();
-    var targetGradientString = gradients[randomInteger(0, gradients.length)];
-    console.log(targetGradientString);
-    targetElement.gradientTransition(targetGradientString, 3000, 60);
+    var targetGradientString = gradients[randomInteger(0, gradients.length - 1)];
+    targetElement.gradientTransition(targetGradientString, 1000, 60);
   });
 
   var directions = ['top', 'right', 'bottom','left', 'top right', 'bottom right', 'bottom left', 'top left', 'right top', 'right bottom', 'left bottom', 'left top' ];
@@ -37,7 +36,8 @@ $(document).ready(function() {
   var gradients = [];
   $.getJSON( "js/demogradients.json", function( data ) {
     for (var gr in data) {
-      var string = 'linear-gradient(to ' + directions[randomInteger(0, directions.length)] + ', ' + data[gr].colors[0] + ' 0%' + ', ' + data[gr].colors[1] + ' 100%' + ')';
+      // var string = 'linear-gradient(to ' + directions[1] + ', ' + data[gr].colors[0] + ' 0%' + ', ' + data[gr].colors[1] + ' 100%' + ')';
+      var string = 'linear-gradient(to ' + directions[randomInteger(0, directions.length - 1)] + ', ' + data[gr].colors[0] + ' 0%' + ', ' + data[gr].colors[1] + ' 100%' + ')';
       gradients.push(string);
     }
   });

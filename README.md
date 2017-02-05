@@ -1,30 +1,37 @@
 #Gradient.js
-![gradient demo](http://i.imgur.com/JZT4wm1.gif)
+![gradient](http://i.imgur.com/CG2rJCq.gif)
+
 **Suported features:**
 
 - Transition duration
+- Frames per second (FPS)
 - Unlimited count of colors
+- HEX colors
+- Direction of gradient
 
 **Not suportet yet:**
 
-- Gradient direction (beta support, branch: "feature/gradient_direction")
 - Different count of colors (between start gradient and target)
-- Hex color code
 - Works only with linear-gradient
 
 ***Usage***
 
 ```javascript
-gradient(elementSelector, targetGradientString, duration)
+Element.gradientTransition(targetGradientString, duration, fps);
 ```
 ***Example:***
 ```javascript
 var button = $('#button');
+var element = document.querySelector('.some-class');
 var gradientString = 'linear-gradient(rgb(247, 91, 52) 0%, rgb(240, 233, 93) 25%, rgb(43, 245, 12) 50%, rgb(24, 85, 240) 75%, rgb(166, 39, 230) 100%)';
 
-button.click( gradient('body', gradientString, 500) );
+button.click( function() {
+  element.gradientTransition(targetGradientString, duration, fps);
+} );
 ```
 
-**Demo site usage**
-- Click 'change'
-- Click 'Magic!'
+**Demo site**
+
+https://iron66.github.io/gradients/
+
+- Click 'RANDOM'

@@ -184,27 +184,37 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
       maxDiff = {};
 
     var directionDifference = targetGradient.direction - startGradient.direction;
-    if (Math.abs(directionDifference) > max) {
-      max = Math.abs(directionDifference);
-      if (directionDifference > 0) {
-        var positive = true;
-      } else if (directionDifference < 0) {
-        var positive = false
-      } // if difference = 0 -> 'positive' should stay 'undefined'
-    }
-    maxDiff = {
-      'value': targetGradient.direction,
-      'valuePart': 'direction',
-      'valueDifference': max, // save the difference value
-      'positive': positive,
-      'step': targetGradient.direction / frames
-    };
     targetGradient.direction = {
       'value': targetGradient.direction,
       'valueDifference': directionDifference, // save the difference value
       'positive': positive,
       'step': directionDifference / frames
     };
+    if (directionDifference > 180) {
+      if (targetGradient.direction.positive) {
+        targetGradient.direction.value = (targetGradient.direction.value - 180)%360;
+        targetGradient.parts.reverse();
+      } else {
+        targetGradient.direction.value = (targetGradient.direction.value + 180)%360;
+        targetGradient.parts.reverse();
+      }
+    }
+    if (Math.abs(targetGradient.direction.valueDifference) > max) {
+      max = Math.abs(targetGradient.direction.valueDifference);
+      if (targetGradient.direction.valueDifference > 0) {
+        var positive = true;
+      } else if (targetGradient.direction.valueDifference < 0) {
+        var positive = false
+      } // if difference = 0 -> 'positive' should stay 'undefined'
+    }
+    maxDiff = {
+      'value': targetGradient.direction.value,
+      'valuePart': 'direction',
+      'valueDifference': max, // save the difference value
+      'positive': positive,
+      'step': targetGradient.direction.value / frames
+    };
+
 
     //TODO: Add the difference between percentages to compare
     for (var p in targetGradient.parts) {
@@ -264,6 +274,7 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
 // Should be before functions step, difference, stringToDegree.
   function transition(el, startGradient, targetGradient, duration) {
     targetGradient = difference(startGradient, targetGradient);
+
     var framesCounter = 0;
     el.iterationTimer = setInterval(function () {
       framesCounter++;

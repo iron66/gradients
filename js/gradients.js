@@ -6,12 +6,12 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
   fps = fps || 1000 / 60;
 
   if(this.execution) {
+    clearInterval(this.iterationTimer);
     this.style.backgroundImage = this.currentGradientString;
     var startGradientString = this.currentGradientString;
-    clearInterval(gradientIterationTimer);
   } else {
     this.execution = true;
-    var startGradientString = window.getComputedStyle(this, null).backgroundImage || this.currentGradientString
+    var startGradientString = window.getComputedStyle(this, null).backgroundImage ||  this.style.backgroundImage || this.currentGradientString;
   }
 
 
@@ -265,37 +265,44 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
   function transition(el, startGradient, targetGradient, duration) {
     targetGradient = difference(startGradient, targetGradient);
     var framesCounter = 0;
-    var gradientIterationTimer = setInterval(function () {
+    el.iterationTimer = setInterval(function () {
       framesCounter++;
-      var stop =  Math.floor(frames/2)
-      if (framesCounter == stop) {
-        console.log(targetGradientString);
-      }
       if (framesCounter < frames) {
         var currentGradient = step(startGradient, targetGradient, startGradient.type);
         var string = 'linear-gradient('+Math.floor(currentGradient.direction)+'deg, rgb(';
         for (var p in currentGradient.parts) {
           for (var c in currentGradient.parts[p].channels) {
             string += Math.floor(currentGradient.parts[p].channels[c]);
+            // if channel is NOT last of cahnnels array
             if (c != 2) {
               string += ', ';
+            } else {
+              string += ') ';
             }
           }
-          if ( currentGradient.parts[+p+1] && currentGradient.parts[p].percent) {
-            string += ') ' + currentGradient.parts[p].percent + ', rgb(';
-          } else if ( currentGradient.parts[+p+1] && !(currentGradient.parts[p].percent)) {
-            string += '), rgb(';
-          } else if (!(currentGradient.parts[+p+1]) && !(currentGradient.parts[p].percent)){
-            string += '))';
+          // If part is NOT last of array
+          if (currentGradient.parts[+p+1]) {
+            // And if it has a percent
+            if (currentGradient.parts[p].percent) {
+              string += ' ' + currentGradient.parts[p].percent;
+            }
+            string += ', rgb(';
+          }
+          // If part IS last of array
+          else {
+            if (currentGradient.parts[p].percent) {
+              string += ' ' + currentGradient.parts[p].percent;
+            }
+            string += ')';
+            el.currentGradientString = string;
           }
         }
-        el.currentGradientString = string;
         el.style.backgroundImage = el.currentGradientString;
       } else {
         el.style.backgroundImage = targetGradientString;
         el.currentGradientString = targetGradientString;
         el.execution = false;
-        clearInterval(gradientIterationTimer);
+        clearInterval(el.iterationTimer);
       }
 
     }, (duration / frames));

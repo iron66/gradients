@@ -5,8 +5,17 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
   duration = duration || 1000;
   fps = fps || 1000 / 60;
 
-  var startGradientString = window.getComputedStyle(this, null).backgroundImage || this.currentGradientString,
-    startGradient = parseGradient(startGradientString),
+  if(this.execution) {
+    this.style.backgroundImage = this.currentGradientString;
+    var startGradientString = this.currentGradientString;
+    clearInterval(gradientIterationTimer);
+  } else {
+    this.execution = true;
+    var startGradientString = window.getComputedStyle(this, null).backgroundImage || this.currentGradientString
+  }
+
+
+  var startGradient = parseGradient(startGradientString),
     targetGradient = parseGradient(targetGradientString),
     oneFrameTime = 1000 / fps,
     frames = duration / oneFrameTime;
@@ -280,10 +289,12 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
             string += '))';
           }
         }
-        el.style.backgroundImage = string;
+        el.currentGradientString = string;
+        el.style.backgroundImage = el.currentGradientString;
       } else {
         el.style.backgroundImage = targetGradientString;
         el.currentGradientString = targetGradientString;
+        el.execution = false;
         clearInterval(gradientIterationTimer);
       }
 

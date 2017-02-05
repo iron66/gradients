@@ -67,7 +67,8 @@ button {
       flex: 0 1 auto;
   position: relative;
   z-index: 1;
-  background-color: #fff; }
+  background-color: #fff;
+  box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.5); }
   .top .bar {
     overflow: hidden; }
     .top .bar .name, .top .bar #settings_toggler {
@@ -147,8 +148,10 @@ button {
     right: 25px; }
 
 footer {
+  position: relative;
   background-color: #252525;
-  padding: 25px 40px; }
+  padding: 25px 40px;
+  box-shadow: 0px -2px 5px 1px rgba(0, 0, 0, 0.5); }
   footer .logo {
     height: 70px;
     width: auto;

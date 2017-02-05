@@ -22,7 +22,7 @@ $(document).ready(function() {
   $buttonRandom.click(function (e) {
     e.preventDefault();
     var targetGradientString = gradients[randomInteger(0, gradients.length - 1)];
-    targetElement.gradientTransition(targetGradientString, 1000, 60);
+    targetElement.gradientTransition(targetGradientString, 1500, 60);
   });
 
   var directions = ['top', 'right', 'bottom','left', 'top right', 'bottom right', 'bottom left', 'top left', 'right top', 'right bottom', 'left bottom', 'left top' ];

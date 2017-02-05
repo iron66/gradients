@@ -267,12 +267,12 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     var framesCounter = 0;
     el.iterationTimer = setInterval(function () {
       framesCounter++;
-      if (framesCounter < frames) {
+      if (framesCounter <= frames) {
         var currentGradient = step(startGradient, targetGradient, startGradient.type);
-        var string = 'linear-gradient('+Math.floor(currentGradient.direction)+'deg, rgb(';
+        var string = 'linear-gradient('+Math.round(currentGradient.direction)+'deg, rgb(';
         for (var p in currentGradient.parts) {
           for (var c in currentGradient.parts[p].channels) {
-            string += Math.floor(currentGradient.parts[p].channels[c]);
+            string += Math.round(currentGradient.parts[p].channels[c]);
             // if channel is NOT last of cahnnels array
             if (c != 2) {
               string += ', ';

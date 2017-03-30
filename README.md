@@ -4,27 +4,29 @@
 
 - Transition duration
 - Unlimited count of colors
+- Gradient direction
+- Hex color code
 
 **Not suportet yet:**
 
-- Gradient direction (beta support, branch: "feature/gradient_direction")
 - Different count of colors (between start gradient and target)
-- Hex color code
 - Works only with linear-gradient
 
 ***Usage***
 
 ```javascript
-gradient(elementSelector, targetGradientString, duration)
+element.gradientTransition(gradientString, duration, fps);
 ```
 ***Example:***
 ```javascript
 var button = $('#button');
-var gradientString = 'linear-gradient(rgb(247, 91, 52) 0%, rgb(240, 233, 93) 25%, rgb(43, 245, 12) 50%, rgb(24, 85, 240) 75%, rgb(166, 39, 230) 100%)';
+var targetGradientString = 'linear-gradient(rgb(247, 91, 52) 0%, rgb(240, 233, 93) 25%, rgb(43, 245, 12) 50%, rgb(24, 85, 240) 75%, rgb(166, 39, 230) 100%)';
+var targetElement = $('#target');
 
-button.click( gradient('body', gradientString, 500) );
+button.click( function() {
+  targetElement.gradientTransition(targetGradientString, 1500, 60);
+} );
 ```
 
 **Demo site usage**
-- Click 'change'
-- Click 'Magic!'
+- Click 'random'

@@ -29,6 +29,9 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     duration = duration || 1000;
     fps = fps || 1000 / 60;
 
+    var elementSize = getElementSize(this);
+    var angles = getAngles(elementSize.height, elementSize.width);
+
     if(this.execution) {
         clearInterval(this.iterationTimer);
         this.style.backgroundImage = this.currentGradientString;
@@ -63,6 +66,13 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     } catch(e) {
         console.warn('Error ' + e.name + ":" + e.message + "\n" + e.stack);
         return null;
+    }
+
+    function getElementSize(el) {
+      return {
+        height: el.offsetHeight,
+        width: el.offsetWidth
+      }
     }
 
     function getColorType(string) {
@@ -286,20 +296,42 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     }
 
     function stringToDegree(string) {
+
         switch (string) {
             case 'top': return 0;
             case 'right': return 90;
             case 'bottom': return 180;
             case 'left': return 270;
-            case 'top right': return 45;
-            case 'bottom right': return 135;
-            case 'bottom left': return 225;
-            case 'top left': return 315;
-            case 'right top': return 45;
-            case 'right bottom': return 135;
-            case 'left bottom': return 225;
-            case 'left top': return 315;
+            case 'top right':
+            case 'right top': return angles.b;
+            case 'bottom right':
+            case 'right bottom': return angles.a + 90;
+            case 'bottom left':
+            case 'left bottom': return angles.b + 180;
+            case 'top left':
+            case 'left top': return angles.a + 270;
         }
+    }
+
+    function getAngles(sideOne, sideTwo) {
+      /*
+      *     b
+      *     *
+      *     *   *
+      *   B *       *
+      *     *          *
+      *    c* * * * * * * * a
+      *           A
+      *
+      *   B = sideOne, A = sideWto
+      * */
+
+      var a,b, c = 90;
+
+      a = (Math.atan(sideTwo/sideOne)) * 180 / Math.PI;
+      b = 180 - c - a;
+
+      return {a: a, b: b};
     }
 
     function gradientObjectToString(gradient) {

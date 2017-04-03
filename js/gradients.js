@@ -126,7 +126,7 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
             } else {
                 throw new Error('Incorect direction');
             }
-        } else return 0;
+        } else return 180;
 
         return (parseInt(result)%360);
     }
@@ -371,7 +371,14 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
             gradient = parseGradient(gradientString),
             percents = [],
             colors = [],
-            invertedDirection = gradient.direction > 180? gradient.direction - 180 : gradient.direction + 180;
+            invertedDirection;
+        if (gradient.direction > 180) {
+            invertedDirection = gradient.direction - 180;
+        } else if (gradient.direction < 180) {
+            invertedDirection = gradient.direction + 180;
+        } else if (gradient.direction == 180) {
+            invertedDirection = 0;
+        }
 
         for (var i = 0; i < gradient.parts.length; i++) {
             percents.push(gradient.parts[i].percent);

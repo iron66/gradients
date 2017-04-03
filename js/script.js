@@ -28,7 +28,7 @@ $(document).ready(function() {
   var directions = ['top', 'right', 'bottom','left', 'top right', 'bottom right', 'bottom left', 'top left', 'right top', 'right bottom', 'left bottom', 'left top' ];
 
   function randomInteger(min, max) {
-    var rand = min + Math.random() * (max - min)
+    var rand = min + Math.random() * (max - min);
     rand = Math.round(rand);
     return rand;
   }

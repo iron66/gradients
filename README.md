@@ -3,6 +3,7 @@
 **Suported features:**
 
 - Transition duration
+- Frames per second (FPS)
 - Unlimited count of colors
 - Gradient direction
 - Hex color code

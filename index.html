@@ -26,8 +26,8 @@
                 Current: <input type="text" name="current" id="currentGradientString">
             </div>
             <div class="target">
-                <form id="gradient_settings">
-                    <div class="color">
+                <form id="gradient_settings" action="index.html">
+                    <section class="color">
                         <div class="title">Color:</div>
                         <div class="options">
                             <input type="radio" name="color" data-color="1">
@@ -37,11 +37,11 @@
                             <input type="radio" name="color" data-color="5">
                         </div>
                         <div class="custom">
-                            <input type="text" name="color" placeholder="custom: e.g. #ffffff, #000000">
+                            <input type="text" name="color" placeholder="custom: #ffffff 0%, #000000 20%, ..." title="Note: make sure that count of colors matches with current count of colors">
 
                         </div>
-                    </div>
-                    <div class="direction">
+                    </section>
+                    <section class="direction">
                         <div class="title">Direction:</div>
                         <div class="options">
                             <input type="radio" name="direction" data-direction="t">
@@ -54,16 +54,16 @@
                             <input type="radio" name="direction" data-direction="lt">
                         </div>
                         <div class="custom">
-                            <input type="text" name="direction" placeholder="custom: 0-360"><span>deg</span>
+                            <input type="text" name="direction" placeholder="custom: 0-360">
                         </div>
-                    </div>
-                    <div class="duration">
+                    </section>
+                    <section class="duration">
                         <span class="title">Duration:</span>
                         <div class="custom">
-                            <input type="text" placeholder="e.g. 3000"><span>ms</span>
+                            <input type="text" placeholder="e.g. 3000">
                         </div>
-                    </div>
-                    <button>save</button>
+                    </section>
+                    <input type="submit" value="save" >
                 </form>
             </div>
         </div>

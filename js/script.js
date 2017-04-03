@@ -1,16 +1,21 @@
 $(document).ready(function() {
   var $settingsToggler = $('#settings_toggler'),
     $settingsBlock = $('.settings'),
-    $settingsCurrent = $('.settings .current code'),
+    $settingsCurrent = $('.settings .current #currentGradientString'),
     targetElement = document.querySelector('.canvas'),
     targetElementGradient = window.getComputedStyle(targetElement),
     $targetElement = $('.canvas'),
     $buttonSave = $('.settings button'),
     $buttonRandom = $('.canvas #random'),
-    $buttonGO = $('.settings #go');
+    customGradient = {};
 
-  $settingsCurrent.html($targetElement.css('background-image'));
+  $settingsCurrent.val($targetElement.css('background-image'));
   $settingsBlock.hide();
+
+  $settingsCurrent.on('change', function(){
+    customGradient.string = $(this).val();
+    $(targetElement).css('background-image', customGradient.string);
+  });
 
   $settingsToggler.click(function () {
     $settingsBlock.slideToggle('fast');

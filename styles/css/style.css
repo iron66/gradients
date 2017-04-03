@@ -113,7 +113,8 @@ button {
       border-radius: 3px;
       font-size: 11px;
       line-height: 11px;
-      padding: 6px 10px 3px 10px; }
+      padding: 6px 10px 3px 10px;
+      box-sizing: border-box; }
     .top .settings .title {
       width: 20%;
       float: left; }
@@ -126,6 +127,8 @@ button {
     .top .settings button {
       margin: 20px auto 0;
       display: block; }
+    .top .settings #currentGradientString {
+      width: 100%; }
 
 .canvas {
   background-color: #ddd;

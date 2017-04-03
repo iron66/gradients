@@ -63,6 +63,7 @@
       font-size: 11px;
       line-height: 11px;
       padding: 6px 10px 3px 10px;
+      box-sizing: border-box;
     }
     .title {
       width: 20%;
@@ -79,6 +80,9 @@
     button {
       margin: 20px auto 0;
       display: block;
+    }
+    #currentGradientString {
+      width: 100%;
     }
   }
 }

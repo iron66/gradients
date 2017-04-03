@@ -20,7 +20,7 @@ element.gradientTransition(gradientString, duration, fps);
 ***Example:***
 ```javascript
 var button = $('#button');
-var targetGradientString = 'linear-gradient(rgb(247, 91, 52) 0%, rgb(240, 233, 93) 25%, rgb(43, 245, 12) 50%, rgb(24, 85, 240) 75%, rgb(166, 39, 230) 100%)';
+var targetGradientString = 'linear-gradient(to right top, rgb(247, 91, 52) 0%, rgb(240, 233, 93) 25%, rgb(43, 245, 12) 50%, rgb(24, 85, 240) 75%, rgb(166, 39, 230) 100%)';
 var targetElement = $('#target');
 
 button.click( function() {

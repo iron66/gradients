@@ -60,7 +60,9 @@ $(document).ready(function() {
     $customDirections = $directions.find('input[type="radio"]'),
     $customDirectionsCustomValue = $directions.find('input[type="text"]'),
     $duration = $('.duration'),
-    $customDuration = $duration.find('input[type="text"]'),
+    $easing = $('.easing'),
+    $customEasing = $('input[type="radio"]', $easing),
+    $customEasingField = $('input[type="text"]', $easing),
     customGradient = {},
     borderBottomColor = $('section', $(this)).css('border-bottom-color');
 
@@ -151,6 +153,13 @@ $(document).ready(function() {
     }
     customGradient.direction = direction;
   });
+  $easing.find('.options').on('change', function (event) {
+    var easing = '', values;
+    if(event.target.getAttribute('type') == 'radio') {
+      var $checkedElement = $customEasing.filter(':checked');
+      customGradient.easing = $checkedElement.data().easing;
+    }
+  });
   $duration.on('change', function (event) {
     customGradient.duration = event.target.value;
   });
@@ -161,8 +170,6 @@ $(document).ready(function() {
       $colors.css('border-bottom-color', 'red');
     } else if (!customGradient.direction) {
       $directions.css('border-bottom-color', 'red');
-    } else if (!customGradient.duration) {
-      $duration.css('border-bottom-color', 'red');
     } else {
       $('section', $(this)).css('border-bottom-color', borderBottomColor);
       $buttonSaved.prop("disabled", false);
@@ -170,8 +177,8 @@ $(document).ready(function() {
         direction: customGradient.direction,
         colors: customGradient.colors
       });
+        $settingsToggler.trigger("click");
     }
-    // $settingsToggler.trigger("click");
   });
 
   $settingsToggler.click(function () {
@@ -185,6 +192,6 @@ $(document).ready(function() {
   });
   $buttonSaved.click(function (e) {
     e.preventDefault();
-    targetElement.gradientTransition(customGradient.string, customGradient.duration, 60);
+    targetElement.gradientTransition(customGradient.string, customGradient.duration, 60, customGradient.easing);
   });
 });

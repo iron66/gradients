@@ -16,7 +16,7 @@
 ***Usage***
 
 ```javascript
-element.gradientTransition(gradientString, duration, fps);
+element.gradientTransition(gradientString, duration, fps, easingFn);
 ```
 ***Example:***
 ```javascript
@@ -25,9 +25,23 @@ var targetGradientString = 'linear-gradient(to right top, rgb(247, 91, 52) 0%, r
 var targetElement = $('#target');
 
 button.click( function() {
-  targetElement.gradientTransition(targetGradientString, 1500, 60);
+  targetElement.gradientTransition(targetGradientString, 1500, 60, 'easeInOutQuad');
 } );
 ```
+Easing functions:
+* linear
+* easeInQuad
+* easeOutQuad
+* easeInOutQuad
+* easeInCubic
+* easeOutCubic
+* easeInOutCubic
+* easeInQuart
+* easeOutQuart
+* easeInOutQuart
+* easeInQuint
+* easeOutQuint
+* easeInOutQuint
 
 **Demo site usage**
 - Click 'random'

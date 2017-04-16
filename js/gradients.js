@@ -22,15 +22,45 @@
  *  }
  */
 
-Element.prototype.gradientTransition = function (targetGradientString, duration, fps) {
+Element.prototype.gradientTransition = function (targetGradientString, duration, fps, easingFn) {
     'use strict';
 
     // Default values:
     duration = duration || 1000;
-    fps = fps || 1000 / 60;
+    fps = fps || 1000 / 60,
+        easingFn = easingFn || 'linear';
 
     var elementSize = getElementSize(this);
     var angles = getAngles(elementSize.height, elementSize.width);
+
+    var easingFunctions = {
+        // no easing, no acceleration
+        linear: function (t) { return t },
+        // accelerating from zero velocity
+        easeInQuad: function (t) { return t*t },
+        // decelerating to zero velocity
+        easeOutQuad: function (t) { return t*(2-t) },
+        // acceleration until halfway, then deceleration
+        easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
+        // accelerating from zero velocity
+        easeInCubic: function (t) { return t*t*t },
+        // decelerating to zero velocity
+        easeOutCubic: function (t) { return (--t)*t*t+1 },
+        // acceleration until halfway, then deceleration
+        easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
+        // accelerating from zero velocity
+        easeInQuart: function (t) { return t*t*t*t },
+        // decelerating to zero velocity
+        easeOutQuart: function (t) { return 1-(--t)*t*t*t },
+        // acceleration until halfway, then deceleration
+        easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
+        // accelerating from zero velocity
+        easeInQuint: function (t) { return t*t*t*t*t },
+        // decelerating to zero velocity
+        easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
+        // acceleration until halfway, then deceleration
+        easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
+    };
 
     if(this.execution) {
         clearInterval(this.iterationTimer);
@@ -43,6 +73,7 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
 
 
     var startGradient = parseGradient(startGradientString),
+        currentGradient = parseGradient(startGradientString),
         oneFrameTime = 1000 / fps,
         frames = duration / oneFrameTime;
 
@@ -55,7 +86,7 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     try {
         if (targetGradient.type == 'linear' && startGradient.type == 'linear') {
             // Linear transition
-            transition(this, startGradient, targetGradient, duration);
+            transition(this, startGradient, currentGradient, targetGradient, duration, easingFn);
 
         } else if (targetGradient.type == 'radial' && startGradient.type == 'radial'){
             // Radial transition
@@ -69,10 +100,10 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     }
 
     function getElementSize(el) {
-      return {
-        height: el.offsetHeight,
-        width: el.offsetWidth
-      }
+        return {
+            height: el.offsetHeight,
+            width: el.offsetWidth
+        }
     }
 
     function getColorType(string) {
@@ -197,13 +228,13 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
         return colorsArray; //array[3]
     }
 
-    function transition(el, startGradient, targetGradient, duration) {
-        targetGradient = difference(startGradient, targetGradient);
+    function transition(el, startGradient,currentGradient, targetGradient, duration, esFn) {
+        targetGradient = difference(currentGradient, targetGradient);
         var framesCounter = 0;
         el.iterationTimer = setInterval(function () {
             framesCounter++;
             if (framesCounter <= frames) {
-                var currentGradient = step(startGradient, targetGradient, startGradient.type);
+                currentGradient = step(startGradient, currentGradient, targetGradient, framesCounter, easingFunctions[esFn]);
                 var string = gradientObjectToString(currentGradient);
                 el.currentGradientString = string;
                 el.style.backgroundImage = el.currentGradientString;
@@ -217,17 +248,19 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
         }, (duration / frames));
     }
 
-    function step(currentGradient, targetGradient, type) {
-        if (type == 'linear') {
-            currentGradient.direction += targetGradient.direction.step;
-            for (var p in currentGradient.parts) {
-                for (var c in currentGradient.parts[p].channels) {
-                    currentGradient.parts[p].channels[c] += targetGradient.parts[p].channels[c].step;
-                }
+    function step(startGradient, currentGradient, targetGradient, currentStep, esFn) {
+        var mp = esFn(currentStep/frames);
+        var curVal = startGradient.direction + (targetGradient.direction.step * currentStep * mp);
+        currentGradient.direction = curVal;
+        for (var p in currentGradient.parts) {
+            for (var c in currentGradient.parts[p].channels) {
+                var mp = esFn(currentStep/frames);
+                var curVal = startGradient.parts[p].channels[c] + (targetGradient.parts[p].channels[c].step * currentStep * mp);
+                currentGradient.parts[p].channels[c] = curVal;
             }
-            return currentGradient;
         }
-    }
+        return currentGradient;
+    };
 
     function difference(startGradient, targetGradient) {
         // initial maximal difference value
@@ -314,24 +347,24 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
     }
 
     function getAngles(sideOne, sideTwo) {
-      /*
-      *     b
-      *     *
-      *     *   *
-      *   B *       *
-      *     *          *
-      *    c* * * * * * * * a
-      *           A
-      *
-      *   B = sideOne, A = sideWto
-      * */
+        /*
+         *     b
+         *     *
+         *     *   *
+         *   B *       *
+         *     *          *
+         *    c* * * * * * * * a
+         *           A
+         *
+         *   B = sideOne, A = sideWto
+         * */
 
-      var a,b, c = 90;
+        var a,b, c = 90;
 
-      a = (Math.atan(sideTwo/sideOne)) * 180 / Math.PI;
-      b = 180 - c - a;
+        a = (Math.atan(sideTwo/sideOne)) * 180 / Math.PI;
+        b = 180 - c - a;
 
-      return {a: a, b: b};
+        return {a: a, b: b};
     }
 
     function gradientObjectToString(gradient) {

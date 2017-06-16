@@ -1,14 +1,15 @@
 #Gradient.js
 ![gradient demo](http://i.imgur.com/JZT4wm1.gif)
-**Suported features:**
+**Supported features:**
 
 - Transition duration
 - Frames per second (FPS)
 - Unlimited count of colors
 - Gradient direction
 - Hex color code
+- Easing
 
-**Not suportet yet:**
+**Not supported:**
 
 - Different count of colors (between start gradient and target)
 - Works only with linear-gradient

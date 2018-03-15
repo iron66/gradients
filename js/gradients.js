@@ -27,8 +27,8 @@ Element.prototype.gradientTransition = function (targetGradientString, duration,
 
     // Default values:
     duration = duration || 1000;
-    fps = fps || 1000 / 60,
-        easingFn = easingFn || 'linear';
+    fps = fps || 1000 / 60;
+    easingFn = easingFn || 'linear';
 
     var elementSize = getElementSize(this);
     var angles = getAngles(elementSize.height, elementSize.width);

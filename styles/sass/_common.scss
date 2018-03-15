@@ -7,7 +7,7 @@ body {
   flex-direction: column;
   align-content: stretch;
   margin: 0;
-  font-family: acherus_grotesqueregular;
+  font-family: luganskiV, Helvetica, sans-serif;
 }
 .main {
   background-color: #fff;
@@ -17,7 +17,7 @@ body {
   position: relative;
 }
 code {
-  font-family: overpass-mono;
+  font-family: overpass, Helvetica, sans-serif;
   background-color: #e8e8e8;
   border: 1px solid #d0cfcf;
   border-radius: 3px;
@@ -26,11 +26,5 @@ code {
   padding: 8px 10px 5px 10px;
 }
 button, input[type="submit"] {
-  background-color: transparent;
-  padding: 8px 48px;
-  border-radius: 50px;
-  text-transform: uppercase;
-  border: 3px solid black;
-  font-style: normal;
-  font-weight: 800;
+  @include button();
 }

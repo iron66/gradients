@@ -21,7 +21,7 @@ gulp.task('server', function () {
   browserSync.init({
     server: '.'
   });
-  browserSync.watch(['/styles/css/*.*', 'index.html']).on('change', browserSync.reload);
+  browserSync.watch(['styles/css/*.css', 'index.html']).on('change', browserSync.reload);
 });
 
 gulp.task('watch:sass', function() {

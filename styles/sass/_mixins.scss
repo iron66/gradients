@@ -1,0 +1,36 @@
+@mixin button($bcolor: $gold, $tcolor: $gold) {
+    background-color: transparent;
+    border-style: solid;
+    border-width: 3px;
+    border-color: $bcolor;
+    display: inline-block;
+    padding: 1em 4em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: $tcolor;
+    font-size: 19px;
+    font-weight: 400;
+    box-sizing: border-box;
+    transition-property: all;
+    transition-duration: .3s;
+    cursor: pointer;
+    &:hover, &:focus, &:active {
+      outline: none;
+    }
+    &:hover {
+      box-shadow: inset 0px 0px 0px 1px $bcolor;
+    }
+    &:active {
+      background-color: $gold;
+      color: $black;
+    }
+    &:disabled {
+      background-color: transparent;
+      color: $gray;
+      border-color: $dark_gray;
+      cursor: not-allowed;
+      &:hover {
+        box-shadow: inset 0px 0px 0px 0px $bcolor;
+      }
+    }
+  }

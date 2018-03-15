@@ -1,22 +1,19 @@
 @font-face {
-  font-family: 'snicklesregular';
-  src: url("../fonts/Snickles-webfont.eot");
-  src: url("../fonts/Snickles-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Snickles-webfont.woff") format("woff"), url("../fonts/Snickles-webfont.ttf") format("truetype"), url("../fonts/Snickles-webfont.svg#snicklesregular") format("svg");
-  font-weight: normal;
-  font-style: normal; }
-
-@font-face {
-  font-family: 'overpass-mono';
-  src: url("../fonts/overpass-mono-regular.eot");
-  src: url("../fonts/overpass-mono-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/overpass-mono-regular.woff2") format("woff2"), url("../fonts/overpass-mono-regular.woff") format("woff"), url("../fonts/overpass-mono-regular.ttf") format("truetype");
+  font-family: 'luganskiV';
+  src: url("/asstes/fonts/luganskiyv-webfont.woff2") format("woff2"), url("/asstes/fonts/luganskiyv-webfont.woff") format("woff");
   font-weight: 400;
   font-style: normal; }
 
 @font-face {
-  font-family: 'acherus_grotesqueregular';
-  src: url("../fonts/acherus_grotesque_-_regular-webfont.eot");
-  src: url("../fonts/acherus_grotesque_-_regular-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/acherus_grotesque_-_regular-webfont.woff2") format("woff2"), url("../fonts/acherus_grotesque_-_regular-webfont.woff") format("woff"), url("../fonts/acherus_grotesque_-_regular-webfont.ttf") format("truetype"), url("../fonts/acherus_grotesque_-_regular-webfont.svg#acherus_grotesqueregular") format("svg");
-  font-weight: normal;
+  font-family: 'proxima nova';
+  src: url("/assets/fonts/proxima_nova_bold-webfont.woff2") format("woff2"), url("/assets/fonts/proxima_nova_bold-webfont.woff") format("woff");
+  font-weight: 900;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'overpass';
+  src: url("/asstes/fonts/overpass-mono-regular.woff2") format("woff2"), url("/asstes/fonts/overpass-mono-regular.woff") format("woff");
+  font-weight: 400;
   font-style: normal; }
 
 html {
@@ -31,7 +28,7 @@ body {
   -ms-flex-line-pack: stretch;
       align-content: stretch;
   margin: 0;
-  font-family: acherus_grotesqueregular; }
+  font-family: luganskiV, Helvetica, sans-serif; }
 
 .main {
   background-color: #fff;
@@ -44,7 +41,7 @@ body {
   position: relative; }
 
 code {
-  font-family: overpass-mono;
+  font-family: overpass, Helvetica, sans-serif;
   background-color: #e8e8e8;
   border: 1px solid #d0cfcf;
   border-radius: 3px;
@@ -54,12 +51,34 @@ code {
 
 button, input[type="submit"] {
   background-color: transparent;
-  padding: 8px 48px;
-  border-radius: 50px;
+  border-style: solid;
+  border-width: 3px;
+  border-color: #b0a38b;
+  display: inline-block;
+  padding: 1em 4em;
   text-transform: uppercase;
-  border: 3px solid black;
-  font-style: normal;
-  font-weight: 800; }
+  text-decoration: none;
+  color: #b0a38b;
+  font-size: 19px;
+  font-weight: 400;
+  box-sizing: border-box;
+  transition-property: all;
+  transition-duration: .3s;
+  cursor: pointer; }
+  button:hover, button:focus, button:active, input[type="submit"]:hover, input[type="submit"]:focus, input[type="submit"]:active {
+    outline: none; }
+  button:hover, input[type="submit"]:hover {
+    box-shadow: inset 0px 0px 0px 1px #b0a38b; }
+  button:active, input[type="submit"]:active {
+    background-color: #b0a38b;
+    color: #262626; }
+  button:disabled, input[type="submit"]:disabled {
+    background-color: transparent;
+    color: #3d4545;
+    border-color: #404545;
+    cursor: not-allowed; }
+    button:disabled:hover, input[type="submit"]:disabled:hover {
+      box-shadow: inset 0px 0px 0px 0px #b0a38b; }
 
 .top {
   padding: 25px 40px;
@@ -74,7 +93,7 @@ button, input[type="submit"] {
     .top .bar .name, .top .bar #settings_toggler {
       margin: 10px; }
     .top .bar .name {
-      font-family: snicklesregular;
+      font-family: luganskiV, Helvetica, sans-serif;
       font-size: 30px;
       color: #4b4b4b;
       float: left; }
@@ -111,7 +130,7 @@ button, input[type="submit"] {
         background-color: #fff; }
     .top .settings input[type="text"] {
       vertical-align: middle;
-      font-family: overpass-mono;
+      font-family: overpass;
       background-color: #f9f9f9;
       border: 1px solid #d0cfcf;
       border-radius: 3px;
@@ -170,15 +189,24 @@ footer {
   position: relative;
   background-color: #252525;
   padding: 25px 40px;
-  box-shadow: 0px -2px 5px 1px rgba(0, 0, 0, 0.5); }
+  box-shadow: 0px -2px 5px 1px rgba(0, 0, 0, 0.5);
+  display: -ms-flexbox;
+  display: flex; }
   footer .logo {
     height: 70px;
     width: auto;
-    float: left; }
+    -ms-flex: 1 1 auto;
+        flex: 1 1 auto; }
   footer .git-link {
     height: 70px;
     width: auto;
-    float: right; }
+    -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+    text-align: right; }
+  footer button {
+    -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+    margin: 0 15px; }
   footer img {
     max-width: 100%;
     max-height: 100%; }
